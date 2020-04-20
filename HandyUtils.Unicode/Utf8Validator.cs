@@ -133,7 +133,7 @@ namespace HandyUtils.Unicode
 
         // This table maps bytes to character classes
         // to reduce the size of the transition table
-        private static readonly byte[] Utf8BytesToCharacterClassMask = new byte[256]
+        private static readonly byte[] Utf8ByteToCharacterClassMask = new byte[256]
         {
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 00..0F
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 10..1F
@@ -203,7 +203,7 @@ namespace HandyUtils.Unicode
 
         private void DecodeByte(ref byte currentState, byte inputByte)
         {
-            var characterClass = Utf8BytesToCharacterClassMask[inputByte];
+            var characterClass = Utf8ByteToCharacterClassMask[inputByte];
 
             currentState = StateAndCharacterClassTransitions[currentState + characterClass];
         }
