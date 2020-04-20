@@ -6,22 +6,15 @@ namespace HandyUtils.Unicode
     [StructLayout(LayoutKind.Explicit)]
     internal readonly struct BytesUnion
     {
-        [FieldOffset(0)]
-        public readonly byte FirstByte;
-        [FieldOffset(1)]
-        public readonly byte SecondByte;
-        [FieldOffset(2)]
-        public readonly byte ThirdByte;
-        [FieldOffset(3)]
-        public readonly byte FourthByte;
+        [FieldOffset(0)] public readonly byte FirstByte;
+        [FieldOffset(1)] public readonly byte SecondByte;
+        [FieldOffset(2)] public readonly byte ThirdByte;
+        [FieldOffset(3)] public readonly byte FourthByte;
 
-        [FieldOffset(0)]
-        public readonly ushort FirstBytePair;
-        [FieldOffset(2)]
-        public readonly ushort SecondBytePair;
+        [FieldOffset(0)] public readonly ushort FirstBytePair;
+        [FieldOffset(2)] public readonly ushort SecondBytePair;
 
-        [FieldOffset(0)]
-        public readonly uint ByteQuartet;
+        [FieldOffset(0)] public readonly uint ByteQuartet;
 
         // Watch out when running this on architectures other than x86, assuming little endian byte order
         private BytesUnion(byte firstByte, byte secondByte, byte thirdByte, byte fourthByte)
@@ -50,6 +43,9 @@ namespace HandyUtils.Unicode
             return Create(input[0], input[1], input[2], input[3]);
         }
 
-        public static implicit operator uint(in BytesUnion foo) => foo.ByteQuartet;
+        public static implicit operator uint(in BytesUnion foo)
+        {
+            return foo.ByteQuartet;
+        }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace HandyUtils.Unicode
+namespace HandyUtils.Unicode.Validators
 {
-    public class Utf8Validator
+    public static class Utf8Validator
     {
         //
         // Well formed UTF-8 Byte Sequences
@@ -22,6 +22,7 @@ namespace HandyUtils.Unicode
         // | U+100000..U+10FFFF | F4         | 80..8F      | 80..BF     | 80..BF      |
         // ----------------------------------------------------------------------------
 
+        //
         // This class validates UTF-8 bytes using a state machine
         //
         // The state is 0 when enough bytes have been read for a valid UTF-8 character,
@@ -69,22 +70,23 @@ namespace HandyUtils.Unicode
         //      |                                       80..BF                                       |
         //      +------------------------------------------------------------------------------------+
 
+        //
         // Instead of encoding the utf-8 byte ranges directly assign them to a specific character class mask
         //
-        // 00..7F -->  0
-        // 80..8F -->  1
-        // 90..9F -->  9
-        // A0..BF -->  7
-        // C0..C1 -->  8
-        // C2..DF -->  2
-        // E0..E0 --> 10
-        // E1..EC -->  3
-        // ED..ED -->  4
-        // EE..EF -->  3
-        // F0..F0 --> 11
-        // F1..F3 -->  6
-        // F4..F4 -->  5
-        // F5..FF -->  8
+        // 00..7F ->  0
+        // 80..8F ->  1
+        // 90..9F ->  9
+        // A0..BF ->  7
+        // C0..C1 ->  8
+        // C2..DF ->  2
+        // E0..E0 -> 10
+        // E1..EC ->  3
+        // ED..ED ->  4
+        // EE..EF ->  3
+        // F0..F0 -> 11
+        // F1..F3 ->  6
+        // F4..F4 ->  5
+        // F5..FF ->  8
 
         //
         // Character classes transition schema (every transition not included in this schema leads to invalid state - 12)
@@ -133,7 +135,7 @@ namespace HandyUtils.Unicode
 
         // This table maps bytes to character classes
         // to reduce the size of the transition table
-        private static readonly byte[] Utf8ByteToCharacterClassMask = new byte[256]
+        private static readonly byte[] ByteToCharacterClassMaskMap = new byte[256]
         {
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 00..0F
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 10..1F
@@ -165,31 +167,31 @@ namespace HandyUtils.Unicode
             12, 24, 12, 12, 12, 12, 12, 12, 12, 24, 12, 12, // state 60 + character class [0-11]
             12, 12, 12, 12, 12, 12, 12, 36, 12, 36, 12, 12, // state 72 + character class [0-11]
             12, 36, 12, 12, 12, 12, 12, 36, 12, 36, 12, 12, // state 84 + character class [0-11]
-            12, 36, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, // state 96 + character class [0-11]
+            12, 36, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12 // state 96 + character class [0-11]
         };
 
         /// <summary>
-        /// Checks if provided bytes are valid UTF-8 sequence
+        ///     Checks if provided bytes are valid UTF-8 sequence
         /// </summary>
         /// <param name="bytes">Span containing bytes to examine</param>
         /// <returns>If the bytes are valid UTF-8</returns>
-        public bool IsValidUtf8(Span<byte> bytes)
+        public static bool IsSequenceValid(Span<byte> bytes)
         {
             return DecodeBytes(bytes) == ValidState;
         }
 
         /// <summary>
-        /// Checks if provided bytes are valid UTF-8 sequence part. Use when unable to determine
-        /// that you have a complete UTF-8 sequence i.e. networking, processing in chunks etc.
+        ///     Checks if provided bytes are valid UTF-8 sequence with tolerance for last code point missing bytes
+        ///     Use when unable to determine that you have a complete UTF-8 sequence i.e. networking or file tasting
         /// </summary>
         /// <param name="bytes">Span containing bytes to examine</param>
         /// <returns>If the bytes are valid UTF-8 sequence part</returns>
-        public bool IsValidUtf8Part(Span<byte> bytes)
+        public static bool IsSequencePartValid(Span<byte> bytes)
         {
             return DecodeBytes(bytes) != InvalidState;
         }
 
-        private byte DecodeBytes(Span<byte> bytes)
+        private static byte DecodeBytes(Span<byte> bytes)
         {
             byte state = 0;
 
@@ -201,9 +203,9 @@ namespace HandyUtils.Unicode
             return state;
         }
 
-        private void DecodeByte(ref byte currentState, byte inputByte)
+        private static void DecodeByte(ref byte currentState, byte inputByte)
         {
-            var characterClass = Utf8ByteToCharacterClassMask[inputByte];
+            var characterClass = ByteToCharacterClassMaskMap[inputByte];
 
             currentState = StateAndCharacterClassTransitions[currentState + characterClass];
         }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Buffers;
+﻿using System.Buffers;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -15,7 +14,7 @@ namespace HandyUtils.PipelinesUtils
                 return encoding.GetString(buffer.First.Span);
             }
 
-            return string.Create((int)buffer.Length, buffer, (span, sequence) =>
+            return string.Create((int) buffer.Length, buffer, (span, sequence) =>
             {
                 foreach (var segment in sequence)
                 {

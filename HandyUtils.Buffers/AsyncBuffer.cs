@@ -11,7 +11,8 @@ namespace HandyUtils.Buffers
         private readonly bool _clearBufferOnReturn;
 
         /// <summary>
-        /// Returns passed preallocated buffer if size is sufficient or creates a buffer for temporary data using ArrayPool. Consume via using statement.
+        ///     Returns passed preallocated buffer if size is sufficient or creates a buffer for temporary data using ArrayPool.
+        ///     Consume via using statement.
         /// </summary>
         /// <param name="preallocatedBuffer">Pass a preallocated buffer from consuming method (consider using stackalloc)</param>
         /// <param name="bufferSize">Size of buffer to return</param>
@@ -37,7 +38,7 @@ namespace HandyUtils.Buffers
         }
 
         /// <summary>
-        /// Creates a buffer for temporary data using ArrayPool. Consume via using statement. 
+        ///     Creates a buffer for temporary data using ArrayPool. Consume via using statement.
         /// </summary>
         /// <param name="bufferSize">Size of buffer to return</param>
         /// <param name="clearBufferOnReturn">When true zeroes-out buffer memory on dispose</param>

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace HandyUtils.Unicode
 {
@@ -20,8 +18,9 @@ namespace HandyUtils.Unicode
         private const uint Utf16LittleEndian = 0x00_00_FE_FF;
 
         private const uint Utf8Bom = 0x00_BF_BB_EF;
+
         //
-        // UTF-7 actually has 5 different BOM flavours, but each on of them start with these bytes,
+        // UTF-7 actually has 5 different kinds of BOM, but each on of them start with these bytes,
         // possibly over-simplification, but let's pay the price, since this encoding is exotic
         //
         private const uint Utf7Bom = 0x00_76_2F_2B;
@@ -30,14 +29,15 @@ namespace HandyUtils.Unicode
         {
             if (bytes.Length < 4)
             {
-                throw new ArgumentException($"Expected {nameof(bytes)} length to be at least 4, but was {bytes.Length}");
+                throw new ArgumentException(
+                    $"Expected {nameof(bytes)} length to be at least 4, but was {bytes.Length}");
             }
 
-            ref var bytesInitialElement = ref bytes.GetReference();
-            var beginningByteQuartet = Unsafe.As<byte, BytesUnion>(ref bytesInitialElement);
-
             var hasFoundBom = false;
-            encoding = UnicodeEncodings.NotFound;
+            encoding = default;
+
+            ref var bytesInitialElement = ref bytes.GetReference();
+            var beginningByteQuartet = Unsafe.As<byte, uint>(ref bytesInitialElement);
 
             if (IsUtf8ByteOrderMark(beginningByteQuartet))
             {
@@ -64,7 +64,6 @@ namespace HandyUtils.Unicode
                 hasFoundBom = true;
                 encoding = UnicodeEncodings.Utf16LittleEndian;
             }
-
             else if (IsUtf7ByteOrderMark(beginningByteQuartet))
             {
                 hasFoundBom = true;
@@ -74,40 +73,40 @@ namespace HandyUtils.Unicode
             return hasFoundBom;
         }
 
-        private static bool IsUtf32BigEndian(BytesUnion beginningByteQuartet)
+        private static bool IsUtf32BigEndian(uint beginningByteQuartet)
         {
-            return beginningByteQuartet.ByteQuartet == Utf32BigEndian;
+            return beginningByteQuartet == Utf32BigEndian;
         }
 
-        private static bool IsUtf32LittleEndian(BytesUnion beginningByteQuartet)
+        private static bool IsUtf32LittleEndian(uint beginningByteQuartet)
         {
-            return beginningByteQuartet.ByteQuartet == Utf32LittleEndian;
+            return beginningByteQuartet == Utf32LittleEndian;
         }
 
         //
         // When Byte Order Mark is shorter than 4 bytes use binary AND
         // so we only really compare bytes that matter.
         // In other words: whatever & 0 is always 0 e.g.
-        //‭ FE FF 00 00 & FE FF HE HE = FE FF 00 00
+        //‭ FE FF HE HE & FE FF 00 00 = FE FF 00 00
         //
-        private static bool IsUtf16BigEndian(BytesUnion beginningByteQuartet)
+        private static bool IsUtf16BigEndian(uint beginningByteQuartet)
         {
-            return (beginningByteQuartet.ByteQuartet & Utf16BigEndianBom) == Utf16BigEndianBom;
+            return (beginningByteQuartet & Utf16BigEndianBom) == Utf16BigEndianBom;
         }
 
-        private static bool IsUtf16LittleEndian(BytesUnion beginningByteQuartet)
+        private static bool IsUtf16LittleEndian(uint beginningByteQuartet)
         {
-            return (beginningByteQuartet.ByteQuartet & Utf16LittleEndian) == Utf16LittleEndian;
+            return (beginningByteQuartet & Utf16LittleEndian) == Utf16LittleEndian;
         }
 
-        private static bool IsUtf8ByteOrderMark(BytesUnion beginningByteQuartet)
+        private static bool IsUtf8ByteOrderMark(uint beginningByteQuartet)
         {
-            return (beginningByteQuartet.ByteQuartet & Utf8Bom) == Utf8Bom;
+            return (beginningByteQuartet & Utf8Bom) == Utf8Bom;
         }
 
-        private static bool IsUtf7ByteOrderMark(BytesUnion beginningByteQuartet)
+        private static bool IsUtf7ByteOrderMark(uint beginningByteQuartet)
         {
-            return (beginningByteQuartet.ByteQuartet & Utf7Bom) == Utf7Bom;
+            return (beginningByteQuartet & Utf7Bom) == Utf7Bom;
         }
     }
 }

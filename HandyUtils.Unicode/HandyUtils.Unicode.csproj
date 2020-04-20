@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HandyUtils.Buffers\HandyUtils.Buffers.csproj" />
+    <ProjectReference Include="..\HandyUtils.Numbers\HandyUtils.Numbers.csproj" />
   </ItemGroup>
 
 </Project>
