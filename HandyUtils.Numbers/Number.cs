@@ -1,8 +1,10 @@
-﻿namespace HandyUtils.Numbers
+﻿using System.Runtime.CompilerServices;
+
+namespace HandyUtils.Numbers
 {
     public static class Number
     {
-        private static readonly bool[] BytesDivisibleBy4Map = new bool[256]
+        private static readonly bool[] BytesDivisibleBy4Map = new bool[128]
         {
             true, false, false, false, true, false, false, false, true, false, false, false, true, false, false, false, // 00..0F
             true, false, false, false, true, false, false, false, true, false, false, false, true, false, false, false, // 10..1F
@@ -12,14 +14,6 @@
             true, false, false, false, true, false, false, false, true, false, false, false, true, false, false, false, // 50..5F
             true, false, false, false, true, false, false, false, true, false, false, false, true, false, false, false, // 60..6F
             true, false, false, false, true, false, false, false, true, false, false, false, true, false, false, false, // 70..7F
-            true, false, false, false, true, false, false, false, true, false, false, false, true, false, false, false, // 80..8F
-            true, false, false, false, true, false, false, false, true, false, false, false, true, false, false, false, // 90..9F
-            true, false, false, false, true, false, false, false, true, false, false, false, true, false, false, false, // A0..AF
-            true, false, false, false, true, false, false, false, true, false, false, false, true, false, false, false, // B0..BF
-            true, false, false, false, true, false, false, false, true, false, false, false, true, false, false, false, // C0..CF
-            true, false, false, false, true, false, false, false, true, false, false, false, true, false, false, false, // D0..DF
-            true, false, false, false, true, false, false, false, true, false, false, false, true, false, false, false, // E0..EF
-            true, false, false, false, true, false, false, false, true, false, false, false, true, false, false, false // F0..FF
         };
 
         public static bool IsDivisibleBy2(int number)
@@ -29,7 +23,9 @@
 
         public static bool IsDivisibleBy4(int number)
         {
-            return BytesDivisibleBy4Map[number & byte.MaxValue];
+            const byte lowestByteWithEveryBitSetTo1HigherThanDecimal99 = 0b_0111_1111;
+
+            return BytesDivisibleBy4Map[number & lowestByteWithEveryBitSetTo1HigherThanDecimal99];
         }
     }
 }
