@@ -9,21 +9,20 @@ namespace HandyUtils.Unicode
         // UTF-8 and UTF-7 BOMs are 3 bytes long, so we use uint (4 bytes long)
         // to store them in the same value type and compare
         // them easier against input without casting.
-        // Left-over bytes are left empty.
 
         private const uint Utf32BigEndian = 0xFF_FE_00_00;
         private const uint Utf32LittleEndian = 0x00_00_FE_FF;
 
-        private const uint Utf16BigEndianBom = 0x00_00_FF_FE;
-        private const uint Utf16LittleEndian = 0x00_00_FE_FF;
+        private const uint Utf16BigEndianBom = 0xFF_FE_00_00;
+        private const uint Utf16LittleEndian = 0xFE_FF_00_00;
 
-        private const uint Utf8Bom = 0x00_BF_BB_EF;
+        private const uint Utf8Bom = 0xBF_BB_EF_00;
 
         //
         // UTF-7 actually has 5 different kinds of BOM, but each on of them start with these bytes,
         // possibly over-simplification, but let's pay the price, since this encoding is exotic
         //
-        private const uint Utf7Bom = 0x00_76_2F_2B;
+        private const uint Utf7Bom = 0x76_2F_2B_00;
 
         public static bool TryReadBom(Span<byte> bytes, out UnicodeEncodings encoding)
         {
@@ -36,8 +35,7 @@ namespace HandyUtils.Unicode
             var hasFoundBom = false;
             encoding = default;
 
-            ref var bytesInitialElement = ref bytes.GetReference();
-            var beginningByteQuartet = Unsafe.As<byte, uint>(ref bytesInitialElement);
+            var beginningByteQuartet = MemoryMarshal.Read<uint>(bytes);
 
             if (IsUtf8ByteOrderMark(beginningByteQuartet))
             {
@@ -84,29 +82,26 @@ namespace HandyUtils.Unicode
         }
 
         //
-        // When Byte Order Mark is shorter than 4 bytes use binary AND
-        // so we only really compare bytes that matter.
-        // In other words: whatever & 0 is always 0 e.g.
-        //‭ FE FF HE HE & FE FF 00 00 = FE FF 00 00
+        // When Byte Order Mark is shorter than 4 bytes use binary shift
         //
         private static bool IsUtf16BigEndian(uint beginningByteQuartet)
         {
-            return (beginningByteQuartet & Utf16BigEndianBom) == Utf16BigEndianBom;
+            return beginningByteQuartet << 16 == Utf16BigEndianBom;
         }
 
         private static bool IsUtf16LittleEndian(uint beginningByteQuartet)
         {
-            return (beginningByteQuartet & Utf16LittleEndian) == Utf16LittleEndian;
+            return beginningByteQuartet << 16 == Utf16LittleEndian;
         }
 
         private static bool IsUtf8ByteOrderMark(uint beginningByteQuartet)
         {
-            return (beginningByteQuartet & Utf8Bom) == Utf8Bom;
+            return beginningByteQuartet << 8 == Utf8Bom;
         }
 
         private static bool IsUtf7ByteOrderMark(uint beginningByteQuartet)
         {
-            return (beginningByteQuartet & Utf7Bom) == Utf7Bom;
+            return beginningByteQuartet << 8 == Utf7Bom;
         }
     }
 }
