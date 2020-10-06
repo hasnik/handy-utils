@@ -1,10 +1,12 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace HandyUtils.Unicode
 {
     public static class ByteOrderMarks
     {
+        public const byte WindowSize = 4;
+
         // UTF-32 BOM are 4 bytes long, UTF-16 BOM 2 bytes long,
         // UTF-8 and UTF-7 BOMs are 3 bytes long, so we use uint (4 bytes long)
         // to store them in the same value type and compare
@@ -26,46 +28,46 @@ namespace HandyUtils.Unicode
 
         public static bool TryReadBom(Span<byte> bytes, out UnicodeEncodings encoding)
         {
-            if (bytes.Length < 4)
+            if (bytes.Length < WindowSize)
             {
                 throw new ArgumentException(
-                    $"Expected {nameof(bytes)} length to be at least 4, but was {bytes.Length}");
+                    $"Expected {nameof(bytes)} length to be at least {WindowSize}, but was {bytes.Length}");
             }
 
+            var beginningByteQuartet = MemoryMarshal.Read<uint>(bytes);
+            
             var hasFoundBom = false;
             encoding = default;
 
-            var beginningByteQuartet = MemoryMarshal.Read<uint>(bytes);
-
             if (IsUtf8ByteOrderMark(beginningByteQuartet))
             {
-                hasFoundBom = true;
                 encoding = UnicodeEncodings.Utf8;
+                hasFoundBom = true;
             }
             else if (IsUtf32BigEndian(beginningByteQuartet))
             {
-                hasFoundBom = true;
                 encoding = UnicodeEncodings.Utf32BigEndian;
+                hasFoundBom = true;
             }
             else if (IsUtf32LittleEndian(beginningByteQuartet))
             {
-                hasFoundBom = true;
                 encoding = UnicodeEncodings.Utf32LittleEndian;
+                hasFoundBom = true;
             }
             else if (IsUtf16BigEndian(beginningByteQuartet))
             {
-                hasFoundBom = true;
                 encoding = UnicodeEncodings.Utf16BigEndian;
+                hasFoundBom = true;
             }
             else if (IsUtf16LittleEndian(beginningByteQuartet))
             {
-                hasFoundBom = true;
                 encoding = UnicodeEncodings.Utf16LittleEndian;
+                hasFoundBom = true;
             }
             else if (IsUtf7ByteOrderMark(beginningByteQuartet))
             {
-                hasFoundBom = true;
                 encoding = UnicodeEncodings.Utf7;
+                hasFoundBom = true;
             }
 
             return hasFoundBom;
