@@ -53,25 +53,34 @@ namespace HandyUtils.Unicode.Validators
 
         internal static byte DecodeBigEndianBytes(Span<byte> bytes)
         {
-            return DecodeBytes(bytes, 1);
+            byte state = 0;
+
+            for (int i = 1; i < bytes.Length; i += 4)
+            {
+                DecodeByte(ref state, bytes[i - 1]);
+                DecodeByte(ref state, bytes[i]);
+            }
+
+            return state;
         }
 
         internal static byte DecodeLittleEndianBytes(Span<byte> bytes)
         {
-            return DecodeBytes(bytes, 3);
-        }
-
-        private static byte DecodeBytes(Span<byte> bytes, byte offset)
-        {
             byte state = 0;
 
-            for (int i = offset; i < bytes.Length; i += 4)
+            for (int i = 3; i < bytes.Length; i += 4)
             {
                 DecodeByte(ref state, bytes[i]);
                 DecodeByte(ref state, bytes[i - 1]);
             }
 
             return state;
+        }
+
+        private static byte DecodeBytes(Span<byte> bytes, byte offset)
+        {
+            // TODO: Generalise DecodeBigEndianBytes and DecodeLittleEndianBytes to use common logic
+            throw new NotImplementedException();
         }
 
         private static void DecodeByte(ref byte currentState, byte inputByte)
