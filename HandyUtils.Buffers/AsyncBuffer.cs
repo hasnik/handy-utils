@@ -14,25 +14,21 @@ namespace HandyUtils.Buffers
         ///     Returns passed preallocated buffer if size is sufficient or creates a buffer for temporary data using ArrayPool.
         ///     Consume via using statement.
         /// </summary>
-        /// <param name="preallocatedBuffer">Pass a preallocated buffer from consuming method (consider using stackalloc)</param>
+        /// <param name="preallocatedBuffer">Pass a preallocated buffer from consuming method</param>
         /// <param name="bufferSize">Size of buffer to return</param>
         /// <param name="clearBufferOnReturn">When true zeroes-out buffer memory on dispose (default: false)</param>
         public AsyncBuffer(Memory<T> preallocatedBuffer, int bufferSize, bool clearBufferOnReturn = false)
         {
-            _rentedArray = ArrayPool<T>.Shared.Rent(bufferSize);
             _clearBufferOnReturn = clearBufferOnReturn;
-
-            Memory = _rentedArray.AsMemory(0, bufferSize);
 
             if (bufferSize > preallocatedBuffer.Length)
             {
                 _rentedArray = ArrayPool<T>.Shared.Rent(bufferSize);
-                _clearBufferOnReturn = clearBufferOnReturn;
-
                 Memory = _rentedArray.AsMemory(0, bufferSize);
             }
             else
             {
+                _rentedArray = null;
                 Memory = preallocatedBuffer.Slice(0, bufferSize);
             }
         }

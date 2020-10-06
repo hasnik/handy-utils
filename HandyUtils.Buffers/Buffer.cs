@@ -19,20 +19,16 @@ namespace HandyUtils.Buffers
         /// <param name="clearBufferOnReturn">When true zeroes-out buffer memory on dispose (default: false)</param>
         public Buffer(Span<T> preallocatedBuffer, int bufferSize, bool clearBufferOnReturn = false)
         {
-            _rentedArray = ArrayPool<T>.Shared.Rent(bufferSize);
             _clearBufferOnReturn = clearBufferOnReturn;
-
-            Span = _rentedArray.AsSpan(0, bufferSize);
 
             if (bufferSize > preallocatedBuffer.Length)
             {
                 _rentedArray = ArrayPool<T>.Shared.Rent(bufferSize);
-                _clearBufferOnReturn = clearBufferOnReturn;
-
                 Span = _rentedArray.AsSpan(0, bufferSize);
             }
             else
             {
+                _rentedArray = null;
                 Span = preallocatedBuffer.Slice(0, bufferSize);
             }
         }
