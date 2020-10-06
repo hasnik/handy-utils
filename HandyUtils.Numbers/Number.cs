@@ -23,9 +23,9 @@ namespace HandyUtils.Numbers
 
         public static bool IsDivisibleBy4(int number)
         {
-            const byte lowestByteWithEveryBitSetTo1HigherThanDecimal99 = 0b_0111_1111;
+            const byte lowestByteWithBitsSetTo1HigherThanDecimal99 = 0b_0111_1111;
 
-            return BytesDivisibleBy4Map[number & lowestByteWithEveryBitSetTo1HigherThanDecimal99];
+            return BytesDivisibleBy4Map[number & lowestByteWithBitsSetTo1HigherThanDecimal99];
         }
     }
 }
