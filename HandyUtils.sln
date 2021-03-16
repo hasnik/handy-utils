@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HandyUtils.Unicode", "Handy
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HandyUtils.PipelinesUtils", "HandyUtils.PipelinesUtils\HandyUtils.PipelinesUtils.csproj", "{BCBFC9AC-0A09-4A1C-BC5F-FDB03C72D1E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HandyUtils.Numbers", "HandyUtils.Numbers\HandyUtils.Numbers.csproj", "{74C34296-1737-48DF-8F27-3F3F6BDDCCE2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HandyUtils.Numbers", "HandyUtils.Numbers\HandyUtils.Numbers.csproj", "{74C34296-1737-48DF-8F27-3F3F6BDDCCE2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HandyUtils.Spans", "HandyUtils.Spans\HandyUtils.Spans.csproj", "{D38F3798-BA05-4C58-B886-FF9B367154D4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{74C34296-1737-48DF-8F27-3F3F6BDDCCE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74C34296-1737-48DF-8F27-3F3F6BDDCCE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{74C34296-1737-48DF-8F27-3F3F6BDDCCE2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D38F3798-BA05-4C58-B886-FF9B367154D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D38F3798-BA05-4C58-B886-FF9B367154D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D38F3798-BA05-4C58-B886-FF9B367154D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D38F3798-BA05-4C58-B886-FF9B367154D4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
